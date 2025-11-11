@@ -85,6 +85,9 @@ export class SubmissionService implements ISubmissionService {
     }
 
     async updateSubmissionStatus(submissionId: string, status: SubmissionStatus): Promise<ISubmission | null> {
+        if (!submissionId) {
+            throw new BadRequestError("Submission ID is required to update status");
+        }
         const submission = await this.getSubmissionById(submissionId);
         if (!submission) {
             throw new NotFoundError(`Submission with ID ${submissionId} not found`);
