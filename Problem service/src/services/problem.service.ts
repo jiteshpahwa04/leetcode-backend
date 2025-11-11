@@ -1,8 +1,8 @@
-import { CreateProblemDTO } from "../dtos/problem.dto";
 import { IProblem } from "../models/problem.model";
 import { IProblemRepository } from "../repositories/problem.repository";
 import { BadRequestError, NotFoundError } from "../utils/errors/app.error";
 import { sanitizeMarkdown } from "../utils/markdown.sanitizer";
+import { CreateProblemDTO, UpdateProblemDTO } from "../validators/problem.validator";
 
 export interface IProblemService {
     createProblem(problemData: Partial<IProblem>): Promise<IProblem>;
@@ -44,7 +44,7 @@ export class ProblemService implements IProblemService {
         return await this.problemRepository.getAllProblems();
     }
 
-    async updateProblem(problemId: string, updateData: Partial<IProblem>): Promise<IProblem | null> {
+    async updateProblem(problemId: string, updateData: UpdateProblemDTO): Promise<IProblem | null> {
         const problem = await this.problemRepository.getProblemById(problemId);
         if (!problem) {
             throw new NotFoundError("Problem not found");
