@@ -16,6 +16,10 @@ async function setupEvaluationWorker() {
     worker.on("failed", (job, err) => {
         logger.error(`Submission job ${job?.id} failed with error: ${err.message}`);
     });
+
+    worker.on("error", (err) => {
+        logger.error(`Worker encountered an error: ${err.message}`);
+    });
 }
 
 export async function startWorkers() {

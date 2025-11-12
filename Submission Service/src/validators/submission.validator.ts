@@ -2,7 +2,7 @@ import { z } from "zod";
 import { SubmissionLanguage } from "../models/submission.model";
 
 export const CreateSubmissionSchema = z.object({
-    problemId: z.string().uuid(),
+    problemId: z.string().min(1),
     code: z.string().min(1),
     language: z.enum(Object.values(SubmissionLanguage) as [string, ...string[]])
 });
