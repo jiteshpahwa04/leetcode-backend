@@ -6,7 +6,6 @@ import { appErrorHandler, genericErrorHandler } from './middlewares/error.middle
 import logger from './config/logger.config';
 import { attachCorrelationIdMiddleware } from './middlewares/correlation.middleware';
 import { connectDB } from './config/db.config';
-import { createNewRedisConnection } from './config/redis.config';
 const app = express();
 
 app.use(express.json());
@@ -32,6 +31,4 @@ app.listen(serverConfig.PORT, async () => {
     logger.info(`Server is running on http://localhost:${serverConfig.PORT}`);
 
     await connectDB();
-
-    createNewRedisConnection();
 });

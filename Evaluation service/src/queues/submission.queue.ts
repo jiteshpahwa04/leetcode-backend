@@ -1,8 +1,9 @@
 import { Queue, QueueEvents } from "bullmq";
 import { createNewRedisConnection } from "../config/redis.config";
 import logger from "../config/logger.config";
+import { SUBMISSION_QUEUE } from "../utils/constants";
 
-export const submissionQueue = new Queue("submission", {
+export const submissionQueue = new Queue(SUBMISSION_QUEUE, {
     connection: createNewRedisConnection(),
     defaultJobOptions: {
         attempts: 3,
@@ -22,7 +23,7 @@ submissionQueue.on("waiting", (jobId) => {
 });
 
 // On consumer:
-export const submissionEvent = new QueueEvents("submission");
+export const submissionEvent = new QueueEvents(SUBMISSION_QUEUE);
 
 submissionEvent.on("completed", ({ jobId }) => {
     logger.info(`Job ${jobId} has been completed`);

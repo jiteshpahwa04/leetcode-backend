@@ -6,8 +6,8 @@ import { submissionController } from '../../controllers/submission.controller';
 const submissionRouter = express.Router();
 
 submissionRouter.post('/', validateRequestBody(CreateSubmissionSchema), submissionController.createSubmission);
-submissionRouter.get('/:id', submissionController.getSubmissionById);
 submissionRouter.get('/problem/:problemId', submissionController.findByProblemId);
+submissionRouter.get('/:id', submissionController.getSubmissionById);
 submissionRouter.delete('/:id', submissionController.deleteById);
 submissionRouter.patch('/:id/status', validateRequestBody(UpdateSubmissionStatusSchema), submissionController.updateSubmissionStatus);
 
