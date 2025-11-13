@@ -6,7 +6,7 @@ import { appErrorHandler, genericErrorHandler } from './middlewares/error.middle
 import logger from './config/logger.config';
 import { attachCorrelationIdMiddleware } from './middlewares/correlation.middleware';
 import { startWorkers } from './workers/evaluation.worker';
-import { runPythonCode } from './utils/containers/pythonRunner.util';
+import { runCode } from './utils/containers/codeRunner.util';
 // import { pullAllImages } from './utils/containers/pullImage.util';
 const app = express();
 
@@ -48,5 +48,9 @@ for i in range(5):
 print("Hello from inside the Docker container!")
     `;
 
-    await runPythonCode(pythonCode);
+    await runCode({
+        code: pythonCode,
+        language: 'python',
+        timeout: 1000
+    });
 }
