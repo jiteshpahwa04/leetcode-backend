@@ -6,8 +6,8 @@ import { appErrorHandler, genericErrorHandler } from './middlewares/error.middle
 import logger from './config/logger.config';
 import { attachCorrelationIdMiddleware } from './middlewares/correlation.middleware';
 import { startWorkers } from './workers/evaluation.worker';
-import { runCode } from './utils/containers/codeRunner.util';
-import { CPP_IMAGE, PYTHON_IMAGE } from './utils/constants';
+// import { runCode } from './utils/containers/codeRunner.util';
+// import { CPP_IMAGE, PYTHON_IMAGE } from './utils/constants';
 // import { pullAllImages } from './utils/containers/pullImage.util';
 const app = express();
 
@@ -38,46 +38,46 @@ app.listen(serverConfig.PORT, async() => {
 
     // await pullAllImages();
 
-    await testPythonCode();
+    // await testPythonCode();
 
-    await testCPPCode();
+    // await testCPPCode();
 });
 
-async function testPythonCode() {
-    const pythonCode = `
+// async function testPythonCode() {
+//     const pythonCode = `
     
-for i in range(5):
-    print(f"Counting: {i}")
-print("Hello from inside the Docker container!")
-    `;
+// for i in range(5):
+//     print(f"Counting: {i}")
+// print("Hello from inside the Docker container!")
+//     `;
 
-    await runCode({
-        code: pythonCode,
-        language: 'python',
-        timeout: 1000,
-        imageName: PYTHON_IMAGE,
-        input: ''
-    });
-}
+//     await runCode({
+//         code: pythonCode,
+//         language: 'python',
+//         timeout: 1000,
+//         imageName: PYTHON_IMAGE,
+//         input: ''
+//     });
+// }
 
-async function testCPPCode() {
-    // CPP code to return square of a number
-    const cppCode = `
-#include <iostream>
-using namespace std;
-int main() {
-    int num;
-    cin >> num;
-    cout << num * num << endl;
-    return 0;
-}
-    `;
+// async function testCPPCode() {
+//     // CPP code to return square of a number
+//     const cppCode = `
+// #include <iostream>
+// using namespace std;
+// int main() {
+//     int num;
+//     cin >> num;
+//     cout << num * num << endl;
+//     return 0;
+// }
+//     `;
 
-    await runCode({
-        code: cppCode,
-        language: 'cpp',
-        timeout: 1000,
-        imageName: CPP_IMAGE,
-        input: '6'
-    });
-}
+//     await runCode({
+//         code: cppCode,
+//         language: 'cpp',
+//         timeout: 1000,
+//         imageName: CPP_IMAGE,
+//         input: '6'
+//     });
+// }
