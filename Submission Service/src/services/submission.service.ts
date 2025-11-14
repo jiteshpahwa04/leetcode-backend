@@ -10,7 +10,7 @@ export interface ISubmissionService {
     getSubmissionById(submissionId: string): Promise<ISubmission | null>;
     findByProblemId(problemId: string): Promise<ISubmission[]>;
     deleteById(submissionId: string): Promise<boolean>;
-    updateSubmissionStatus(submissionId: string, status: SubmissionStatus): Promise<ISubmission | null>;
+    updateSubmissionStatus(submissionId: string, status: SubmissionStatus, output: Object): Promise<ISubmission | null>;
     getSubmissionsByStatus(status: SubmissionStatus, limit: number): Promise<ISubmission[]>;
 }
 
@@ -57,7 +57,7 @@ export class SubmissionService implements ISubmissionService {
         return submission;
     }
 
-    async getSubmissionById(submissionId: string): Promise<ISubmission | null> {
+    async getSubmissionById(submissionId: string, output?: string): Promise<ISubmission | null> {
         const submission = await this.submissionRepository.getSubmissionById(submissionId);
         if(!submission) {
             throw new NotFoundError(`Submission with ID ${submissionId} not found`);
@@ -84,7 +84,7 @@ export class SubmissionService implements ISubmissionService {
         return await this.submissionRepository.deleteById(submissionId);
     }
 
-    async updateSubmissionStatus(submissionId: string, status: SubmissionStatus): Promise<ISubmission | null> {
+    async updateSubmissionStatus(submissionId: string, status: SubmissionStatus, output: Object): Promise<ISubmission | null> {
         if (!submissionId) {
             throw new BadRequestError("Submission ID is required to update status");
         }
@@ -93,7 +93,7 @@ export class SubmissionService implements ISubmissionService {
             throw new NotFoundError(`Submission with ID ${submissionId} not found`);
         }
 
-        return await this.submissionRepository.updateSubmissionStatus(submissionId, status);
+        return await this.submissionRepository.updateSubmissionStatus(submissionId, status, output);
     }
 
     async getSubmissionsByStatus(status: SubmissionStatus, limit: number): Promise<ISubmission[]> {

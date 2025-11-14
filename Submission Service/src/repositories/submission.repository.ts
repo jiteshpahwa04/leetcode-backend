@@ -6,7 +6,7 @@ export interface ISubmissionRepository {
     getSubmissionById(submissionId: string): Promise<ISubmission | null>;
     findByProblemId(problemId: string): Promise<ISubmission[]>;
     deleteById(submissionId: string): Promise<boolean>;
-    updateSubmissionStatus(submissionId: string, status: SubmissionStatus): Promise<ISubmission | null>;
+    updateSubmissionStatus(submissionId: string, status: SubmissionStatus, output: Object): Promise<ISubmission | null>;
     getSubmissionsByStatus(status: SubmissionStatus, limit: number): Promise<ISubmission[]>;
 }
 
@@ -33,10 +33,10 @@ export class SubmissionRepository implements ISubmissionRepository {
         return result.deletedCount === 1;
     }
 
-    async updateSubmissionStatus(submissionId: string, status: SubmissionStatus): Promise<ISubmission | null> {
+    async updateSubmissionStatus(submissionId: string, status: SubmissionStatus, output: Record<string, string>): Promise<ISubmission | null> {
         return await SubmissionModel.findByIdAndUpdate(
             submissionId,
-            { status },
+            { status, submissionData: output },
             { new: true }
         ).exec();
     }

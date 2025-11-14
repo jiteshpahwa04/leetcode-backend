@@ -1,14 +1,8 @@
 import mongoose, { Document } from "mongoose";
 
 export enum SubmissionStatus {
-    PENDING = "pending",
-    ACCEPTED = "accepted",
-    ERROR = "error",
-    COMPILING = "compiling",
-    RUNNING = "running",
-    TIMEOUT = "timeout",
-    MEMORY_LIMIT_EXCEEDED = "memory_limit_exceeded",
-    WRONG_ANSWER = "wrong_answer"
+    COMPLETED = "COMPLETED",
+    PENDING = "PENDING",
 }
 
 export enum SubmissionLanguage {
@@ -23,6 +17,7 @@ export interface ISubmission extends Document {
     code: string;
     language: SubmissionLanguage;
     status: SubmissionStatus;
+    submissionData: Object;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -45,6 +40,10 @@ const submissionSchema = new mongoose.Schema<ISubmission>({
         type: String,
         enum: Object.values(SubmissionStatus),
         default: SubmissionStatus.PENDING
+    },
+    submissionData: {
+        type: Object,
+        default: {}
     }
 }, {
     timestamps: true,

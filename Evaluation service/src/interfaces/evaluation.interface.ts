@@ -1,4 +1,5 @@
 export interface Testcase {
+    _id: string;
     input: string;
     output: string;
 }

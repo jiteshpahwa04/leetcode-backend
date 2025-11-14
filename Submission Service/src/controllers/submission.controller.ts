@@ -35,8 +35,8 @@ export const submissionController = {
     },
     updateSubmissionStatus: async (req: Request, res: Response, next: NextFunction) => {
         const submissionId = req.params.id;
-        const { status } = req.body;
-        const updatedSubmission = await submissionService.updateSubmissionStatus(submissionId, status);
+        const { status, output } = req.body;
+        const updatedSubmission = await submissionService.updateSubmissionStatus(submissionId, status, output);
         res.status(200).json({
             data: updatedSubmission
         });

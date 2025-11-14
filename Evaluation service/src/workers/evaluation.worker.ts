@@ -5,9 +5,10 @@ import { createNewRedisConnection } from "../config/redis.config";
 import { EvaluationJob, EvaluationResult, Testcase } from "../interfaces/evaluation.interface";
 import { runCode } from "../utils/containers/codeRunner.util";
 import { LANGUAGE_CONFIG } from "../config/language.config";
+import { updateSubmission } from "../api/submission.api";
 
 const matchTestCasesWithResults = (testcases: Testcase[], evaluationResults: EvaluationResult[]) => {
-    const output:string[] = [];
+    const output: Record<string, string> = {};
 
     if (testcases.length !== evaluationResults.length) {
         console.log("Mismatch in number of testcases and evaluation results");
@@ -15,17 +16,20 @@ const matchTestCasesWithResults = (testcases: Testcase[], evaluationResults: Eva
     }
 
     testcases.map((testcase, index) => {
+        let retval = "";
         if (evaluationResults[index].status === 'TLE') {
-            output.push('TLE');
+            retval = 'TLE';
         } else if (evaluationResults[index].status === 'failed' ) {
-            output.push('ERROR');
+            retval = 'ERROR';
         } else {
             if (evaluationResults[index].output?.trim() === testcase.output.trim()) {
-                output.push('AC');
+                retval = 'AC';
             } else {
-                output.push('WA');
+                retval = 'WA';
             }
         }
+
+        output[testcase._id] = retval;
     });
 
     return output;
@@ -55,6 +59,8 @@ async function setupEvaluationWorker() {
             const finalResults = matchTestCasesWithResults(data.problem.testcases, testCasesResults);
 
             logger.info(`Final evaluation results for job ${job.id}: ${JSON.stringify(finalResults)}`);
+
+            await updateSubmission(data.submissionId, 'COMPLETED', JSON.stringify(finalResults));
         } catch (error) {
             logger.error(`Error processing submission job ${job.id}: ${(error as Error).message}`);
             return;
