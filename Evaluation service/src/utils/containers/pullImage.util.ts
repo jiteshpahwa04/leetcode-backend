@@ -15,7 +15,8 @@ export async function pullImage(image: string) {
 
             function onFinished(err: Error | null, output: any) {
                 if (err) {
-                    return rej(err);
+                    rej(err);
+                    return;
                 }
 
                 res(output);

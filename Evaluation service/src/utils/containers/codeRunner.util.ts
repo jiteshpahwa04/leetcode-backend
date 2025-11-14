@@ -24,6 +24,7 @@ export async function runCode(options: RunCodeOptions) {
     const timeLimitExceededTimeout = setTimeout(() => {
        logger.error(`Container execution exceeded time limit of ${timeout} ms. Stopping container.`);
        timeLimitExceeded = true;
+       container?.kill();
     }, timeout);
 
     await container?.start();
@@ -31,10 +32,7 @@ export async function runCode(options: RunCodeOptions) {
     const status = await container?.wait();
 
     if (timeLimitExceeded) {
-        await container?.stop();
         await container?.remove();
-        await container?.kill();
-        clearTimeout(timeLimitExceededTimeout);
         return {
             status: 'TLE',
             output: 'Time Limit Exceeded'

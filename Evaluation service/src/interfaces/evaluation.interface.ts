@@ -20,3 +20,8 @@ export interface EvaluationJob {
     code: string;
     problem: Problem
 }
+
+export interface EvaluationResult {
+    status: string;
+    output: string | undefined;
+}
