@@ -1,20 +1,21 @@
 import logger from "../../config/logger.config";
-import { PYTHON_IMAGE } from "../constants";
 import { commands } from "./commands.util";
 import { createNewDockerContainer } from "./createContainer.util";
 
 export interface RunCodeOptions {
     code: string;
-    language: 'python';
+    language: 'python' | 'cpp';
     timeout: number; // in milliseconds
+    imageName: string;
+    input: string;
 }
 
 export async function runCode(options: RunCodeOptions): Promise<void> {
     const timeout = options.timeout;
-    
+
     const container = await createNewDockerContainer({
-        imageName: PYTHON_IMAGE,
-        cmdExecutable: commands[options.language](options.code),
+        imageName: options.imageName,
+        cmdExecutable: commands[options.language](options.code, options.input),
         memoryLimit: 128 * 1024 * 1024 // 128 MB
     });
 
@@ -34,15 +35,30 @@ export async function runCode(options: RunCodeOptions): Promise<void> {
         stderr: true,
     });
 
-    logger.info(`Container logs:\n${logs?.toString()}`);
+    const sampleOutput = "36";
+
+    const containerLogs = processLogs(logs);
+
+    console.log("Is Output Correct?: ", containerLogs.includes(sampleOutput));
 
     await container?.remove();
 
     clearTimeout(timeLimitExceededTimeout);
 
     if (status?.StatusCode !== 0) {
-        logger.info("Python code execution failed inside the Docker container.");
+        logger.info(`${options.language} code execution failed inside the Docker container.`);
     } else {
-        logger.info("Python code executed successfully inside the Docker container.");
+        logger.info(`${options.language} code executed successfully inside the Docker container.`);
     }
+}
+
+function processLogs(logs: Buffer | undefined) {
+    if (!logs) {
+        return "";
+    }
+    
+    return logs.toString('utf-8')
+        .replace(/\x00/g, '') // Remove null characters
+        .replace(/[\x00-\x09\x0B-\x1F\x7F-\x9F]/g, '') // Remove control characters except \n (0x0A)
+        .trim();
 }

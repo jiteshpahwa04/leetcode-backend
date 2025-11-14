@@ -7,6 +7,7 @@ import logger from './config/logger.config';
 import { attachCorrelationIdMiddleware } from './middlewares/correlation.middleware';
 import { startWorkers } from './workers/evaluation.worker';
 import { runCode } from './utils/containers/codeRunner.util';
+import { CPP_IMAGE, PYTHON_IMAGE } from './utils/constants';
 // import { pullAllImages } from './utils/containers/pullImage.util';
 const app = express();
 
@@ -38,6 +39,8 @@ app.listen(serverConfig.PORT, async() => {
     // await pullAllImages();
 
     await testPythonCode();
+
+    await testCPPCode();
 });
 
 async function testPythonCode() {
@@ -51,6 +54,30 @@ print("Hello from inside the Docker container!")
     await runCode({
         code: pythonCode,
         language: 'python',
-        timeout: 1000
+        timeout: 1000,
+        imageName: PYTHON_IMAGE,
+        input: ''
+    });
+}
+
+async function testCPPCode() {
+    // CPP code to return square of a number
+    const cppCode = `
+#include <iostream>
+using namespace std;
+int main() {
+    int num;
+    cin >> num;
+    cout << num * num << endl;
+    return 0;
+}
+    `;
+
+    await runCode({
+        code: cppCode,
+        language: 'cpp',
+        timeout: 1000,
+        imageName: CPP_IMAGE,
+        input: '6'
     });
 }

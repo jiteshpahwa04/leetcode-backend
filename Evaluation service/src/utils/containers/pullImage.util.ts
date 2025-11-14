@@ -1,6 +1,6 @@
 import Docker from "dockerode";
 import logger from "../../config/logger.config";
-import { PYTHON_IMAGE } from "../constants";
+import { CPP_IMAGE, PYTHON_IMAGE } from "../constants";
 
 export async function pullImage(image: string) {
     const docker = new Docker();
@@ -29,7 +29,7 @@ export async function pullImage(image: string) {
 }
 
 export async function pullAllImages() {
-    const images = [PYTHON_IMAGE];
+    const images = [PYTHON_IMAGE, CPP_IMAGE];
 
     const promises = images.map(img => pullImage(img));
     try {
